@@ -1,306 +1,688 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>인간언어번역기.exe - Alien Human Translator v3.0</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        cosmic: {
+          950: '#101319',
+          900: '#191d25',
+          800: '#252b35',
+          700: '#343d49',
+          border: '#4b5360',
+          accent: '#b9a9c8',
+          cyan: '#a8c3c3',
+          magenta: '#c5a9b5',
+          text: '#e4e2dc',
+          dim: '#a5a6a5'
+        },
+        purple: {
+          200: '#e0d5e5', 300: '#cbbbd5', 400: '#b9a9c8',
+          500: '#a899b8', 600: '#8e819e', 700: '#71677f',
+          800: '#51495e', 900: '#373342', 950: '#24232d'
+        },
+        cyan: {
+          200: '#d8e5df', 300: '#c0d7d0', 400: '#a8c3c3',
+          500: '#91b3b4', 600: '#739899', 700: '#597d81',
+          800: '#3d5b62', 900: '#2c434b', 950: '#1c2d34'
+        },
+        pink: {
+          200: '#f0d9dc', 300: '#e4c3cb', 400: '#d5aeb9',
+          500: '#c49aa8', 600: '#a57e8e', 700: '#805f70',
+          800: '#5b4654', 900: '#40323e', 950: '#291f29'
+        },
+        indigo: {
+          200: '#d9deea', 300: '#c2cadb', 400: '#aab6cf',
+          500: '#929fbe', 600: '#7785a3', 700: '#5e6b88',
+          800: '#424e67', 900: '#30394e', 950: '#202737'
+        },
+        emerald: {
+          200: '#d9e5d7', 300: '#bfd3bd', 400: '#a6c0a5',
+          500: '#8dab8d', 600: '#6f8e72', 700: '#536e59',
+          800: '#3b5143', 900: '#29392f', 950: '#1b2821'
+        }
+      },
+      fontFamily: {
+        sans: ['Noto Sans KR', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        mono: ['DM Mono', 'Courier New', 'monospace']
+      }
+    }
+  }
+};
+</script>
 
 <style>
-#phone,#phone *{box-sizing:border-box}
-#phone{
-  width:100%;max-width:340px;margin:16px auto;padding:10px;
-  background:linear-gradient(145deg,#2b2c35,#1d1e25);
-  border:1px solid #44434d;border-radius:34px;
-  font:12px/1.65 Arial,'Malgun Gothic',sans-serif;
-  color:#2b2d31;box-shadow:0 14px 34px rgba(0,0,0,.28);
+:root {
+  color-scheme: dark;
+  --space: #101319;
+  --panel: rgba(28, 32, 41, .94);
+  --panel-light: rgba(42, 47, 57, .86);
+  --edge: rgba(188, 180, 201, .24);
+  --lavender: #b9a9c8;
+  --sage: #a8c3b1;
+  --mist: #a8c3c3;
+  --rose: #c5a9b5;
+  --ivory: #e4e2dc;
+  --muted: #a5a6a5;
 }
-#phone .screen{
-  position:relative;height:610px;display:flex;flex-direction:column;
-  overflow:hidden;border-radius:25px;background:#f5f5f6;
+
+* { box-sizing: border-box; }
+
+html {
+  min-height: 100%;
+  background: var(--space);
 }
-#phone .status{
-  flex:none;display:flex;justify-content:space-between;align-items:center;
-  padding:12px 18px 5px;background:#f5f5f6;color:#292c31;
-  font-size:11px;font-weight:bold;
+
+body {
+  background-color: var(--space);
+  color: var(--ivory);
+  font-family: 'Noto Sans KR', -apple-system, sans-serif;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
-#phone .signals{display:flex;align-items:center;gap:5px}
-#phone .signal{
-  display:flex;align-items:flex-end;gap:2px;height:12px;
+
+/* 빈티지 우주 관측소: 흐릿한 성운과 부드러운 유리 */
+.window-frame {
+  background:
+    linear-gradient(145deg, rgba(45, 49, 63, .94), rgba(23, 27, 36, .96) 58%, rgba(32, 37, 46, .95));
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid rgba(185, 169, 200, .28);
+  box-shadow:
+    0 24px 65px rgba(0, 0, 0, .42),
+    0 0 36px rgba(147, 161, 178, .06),
+    inset 0 1px rgba(255, 255, 255, .055);
 }
-#phone .signal i{width:3px;background:currentColor;border-radius:1px}
-#phone .signal i:nth-child(1){height:4px}
-#phone .signal i:nth-child(2){height:7px}
-#phone .signal i:nth-child(3){height:10px}
-#phone .signal i:nth-child(4){height:12px;opacity:.35}
-#phone .battery{
-  position:relative;width:19px;height:10px;padding:2px;
-  border:1px solid currentColor;border-radius:3px;
+
+/* 미세한 필름 그레인과 스캔라인 */
+.scanlines {
+  position: relative;
+  overflow: hidden;
 }
-#phone .battery:before{
-  content:"";display:block;width:75%;height:100%;
-  background:currentColor;border-radius:1px;
+.scanlines::before {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0, 0, 0, .055) 4px
+    ),
+    linear-gradient(115deg, rgba(211, 199, 222, .025), transparent 40%, rgba(168, 195, 195, .025));
+  z-index: 20;
+  pointer-events: none;
+  opacity: .55;
+  border-radius: inherit;
 }
-#phone .battery:after{
-  content:"";position:absolute;right:-3px;top:2px;
-  width:2px;height:4px;background:currentColor;border-radius:0 1px 1px 0;
+
+/* 기존 우주 격자는 그대로, 대비만 낮춤 */
+.bg-grid {
+  background-color: #101319;
+  background-image:
+    radial-gradient(ellipse at 18% 12%, rgba(145, 126, 166, .12), transparent 38%),
+    radial-gradient(ellipse at 84% 78%, rgba(108, 154, 157, .10), transparent 36%),
+    linear-gradient(to right, rgba(185, 169, 200, .035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(185, 169, 200, .035) 1px, transparent 1px);
+  background-size: auto, auto, 44px 44px, 44px 44px;
 }
-#phone .nav{
-  flex:none;display:flex;align-items:center;justify-content:space-between;
-  padding:5px 13px 10px;background:#f5f5f6;color:#566273;
-  border-bottom:1px solid #d8dadd;font-size:12px;
+
+/* 차분한 오로라 톤 버튼 */
+.alien-btn {
+  background: linear-gradient(135deg, rgba(68, 64, 82, .78), rgba(36, 47, 56, .94));
+  border: 1px solid rgba(185, 169, 200, .38);
+  box-shadow:
+    0 5px 18px rgba(0, 0, 0, .22),
+    inset 0 1px rgba(255, 255, 255, .07);
+  transition: background .25s ease, border-color .25s ease,
+              box-shadow .25s ease, transform .25s ease, color .25s ease;
 }
-#phone .back{display:flex;align-items:center;gap:5px}
-#phone .chevron{
-  display:inline-block;width:9px;height:9px;
-  border-left:2px solid currentColor;border-bottom:2px solid currentColor;
-  transform:rotate(45deg);margin-left:3px;
+.alien-btn:hover {
+  background: linear-gradient(135deg, rgba(87, 78, 102, .9), rgba(46, 70, 76, .96));
+  border-color: rgba(168, 195, 195, .68);
+  box-shadow: 0 6px 24px rgba(92, 129, 133, .14);
+  transform: translateY(-1px);
 }
-#phone .arrows{display:flex;align-items:center;gap:19px}
-#phone .up,#phone .down{
-  width:9px;height:9px;border-top:1.7px solid currentColor;
-  border-left:1.7px solid currentColor;transform:rotate(45deg);
+.alien-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .24);
 }
-#phone .down{transform:rotate(225deg)}
-#phone .scroll{
-  flex:1 1 0;min-height:0;min-width:0;overflow-y:auto;overflow-x:hidden;
-  padding:15px 14px 20px;background:#f5f5f6;
-  overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
-  scrollbar-width:thin;scrollbar-color:#a0a4ab transparent;
+
+/* 은은한 빛: 기존 애니메이션 유지 */
+@keyframes subtle-glow {
+  0%, 100% {
+    box-shadow: 0 0 22px rgba(185, 169, 200, .07);
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(168, 195, 195, .12);
+  }
 }
-#phone .scroll::-webkit-scrollbar{width:3px}
-#phone .scroll::-webkit-scrollbar-thumb{background:#a0a4ab;border-radius:5px}
-#phone h1{
-  margin:0 0 12px;font-size:17px;line-height:1.5;
-  font-weight:700;letter-spacing:-.5px;overflow-wrap:anywhere;
+.glow-pulse { animation: subtle-glow 5s infinite ease-in-out; }
+
+@keyframes scan-radar {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
 }
-#phone .sender{
-  display:flex;gap:10px;align-items:flex-start;
-  padding-bottom:12px;border-bottom:1px solid #d8dadd;
+.radar-line { animation: scan-radar 3s linear infinite; }
+
+/* 스크롤바 */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: rgba(13, 16, 22, .65); }
+::-webkit-scrollbar-thumb {
+  background: rgba(185, 169, 200, .38);
+  border-radius: 4px;
 }
-#phone .avatar{
-  flex:none;width:37px;height:37px;border-radius:50%;
-  display:grid;place-items:center;background:#6b7280;color:white;
-  font-family:Georgia,serif;font-size:19px;
+::-webkit-scrollbar-thumb:hover { background: rgba(168, 195, 195, .62); }
+
+/* 패널의 색감 통일 */
+.bg-cosmic-900\/70,
+.bg-cosmic-900\/80,
+.bg-cosmic-900\/90,
+.bg-cosmic-900\/60 {
+  background-color: rgba(20, 24, 32, .7);
 }
-#phone .meta{flex:1;min-width:0}
-#phone .row{display:flex;justify-content:space-between;gap:5px;align-items:baseline}
-#phone .name{
-  min-width:0;overflow-wrap:anywhere;font-weight:bold;font-size:11px;
-  letter-spacing:.1px;line-height:1.5;
+
+.bg-cosmic-800\/90,
+.bg-cosmic-800 {
+  background-color: rgba(51, 57, 68, .7);
 }
-#phone .time{flex:none;font-size:9px;color:#7a7e86}
-#phone .to{margin-top:3px;font-size:10px;color:#7a7e86;overflow-wrap:anywhere}
-#phone .to b{color:#2b2d31;font-weight:500}
-#phone .detail{margin-top:2px;font-size:10px;color:#566273}
-#phone .dateline{text-align:center;font-size:10px;color:#7a7e86;margin:12px 0 0}
-#phone .body{padding-top:11px;font-size:11px;line-height:1.85;overflow-wrap:anywhere}
-#phone .body p{margin:0 0 10px}
-#phone .attach-title{margin:13px 0 6px;color:#7a7e86;font-size:10px}
-#phone .file{
-  display:flex;gap:10px;align-items:center;padding:10px;
-  border:1px solid #d8dadd;border-radius:12px;
-  background:#ececee;color:inherit;text-decoration:none;
+
+.bg-cosmic-800\/60 { background-color: rgba(46, 53, 64, .55); }
+
+.border-cosmic-border,
+.border-cosmic-border\/50,
+.border-cosmic-border\/60,
+.border-cosmic-border\/40 {
+  border-color: rgba(173, 174, 184, .2);
 }
-#phone .file:active{background:#e3e5e8}
-#phone .file .fi{
-  flex:none;width:38px;height:38px;border-radius:9px;
-  display:grid;place-items:center;background:#e3e5e8;color:#566273;
-  font-size:20px;font-weight:bold;
+
+.text-white { color: #f0eee8; }
+
+::selection {
+  background: rgba(185, 169, 200, .5);
+  color: #fff;
 }
-#phone .file .ft{min-width:0}
-#phone .file .fn{
-  color:#566273;font-size:11px;font-weight:500;line-height:1.6;
-  text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere;
-}
-#phone .file .fs{font-size:9px;color:#7a7e86}
-#phone .sig{margin-top:14px;font-size:10px;color:#7a7e86}
-#phone .sig .al{font-family:Georgia,serif;letter-spacing:.4px}
-#phone h2{margin:18px 0 7px;font-size:12px;font-weight:700}
-#phone .steps{margin:0;padding-left:18px;font-size:11px;line-height:1.8}
-#phone .steps li{margin-bottom:4px;padding-left:1px}
-#phone .note{margin:10px 0 0;font-size:10px;color:#7a7e86}
-#phone .actions{display:flex;gap:5px;margin-top:15px}
-#phone .actions span{
-  flex:1;min-width:0;text-align:center;padding:7px 2px;
-  border:1px solid #d8dadd;border-radius:24px;
-  font-size:9px;color:#566273;background:#ececee;white-space:nowrap;
-}
-#phone .prev-head{
-  display:flex;justify-content:space-between;align-items:baseline;
-  margin-top:21px;padding-top:12px;border-top:1px solid #d8dadd;
-}
-#phone .prev-head h2{margin:0}
-#phone .prev-head span{font-size:10px;color:#7a7e86}
-#phone .mail{
-  display:flex;gap:9px;padding:11px 0;
-  border-bottom:1px solid #d8dadd;
-}
-#phone .mail:last-of-type{border-bottom:0}
-#phone .mail .avatar{width:32px;height:32px;font-size:15px}
-#phone .mt{flex:1;min-width:0}
-#phone .mr{display:flex;justify-content:space-between;gap:5px;align-items:baseline}
-#phone .mn{
-  min-width:0;font-family:Georgia,serif;font-weight:bold;
-  font-size:10px;overflow-wrap:anywhere;
-}
-#phone .md{flex:none;font-size:9px;color:#7a7e86}
-#phone .ms{
-  margin-top:2px;font-size:10px;font-weight:500;
-  overflow-wrap:anywhere;line-height:1.6;
-}
-#phone .mp{
-  margin-top:2px;font-size:9.5px;color:#7a7e86;line-height:1.6;
-}
-#phone .foot{text-align:center;font-size:9px;color:#7a7e86;margin:13px 0 0}
-#phone .tools{
-  flex:none;display:flex;justify-content:space-around;align-items:center;
-  padding:10px 8px 12px;border-top:1px solid #d8dadd;
-  background:#ececee;color:#566273;
-}
-#phone .tool{width:24px;height:24px;display:grid;place-items:center;font-size:20px}
-#phone .trash{
-  position:relative;width:13px;height:13px;border:1.5px solid currentColor;
-  border-top:0;border-radius:0 0 3px 3px;margin-top:4px;
-}
-#phone .trash:before{
-  content:"";position:absolute;top:-4px;left:-3px;width:16px;
-  border-top:1.5px solid currentColor;
-}
-#phone .trash:after{
-  content:"";position:absolute;top:-7px;left:3px;width:5px;height:2px;
-  border:1px solid currentColor;border-bottom:0;
-}
-#phone .folder{
-  position:relative;width:19px;height:13px;border:1.5px solid currentColor;
-  border-radius:2px;margin-top:4px;
-}
-#phone .folder:before{
-  content:"";position:absolute;left:0;top:-5px;width:8px;height:5px;
-  border:1.5px solid currentColor;border-bottom:0;border-radius:2px 2px 0 0;
-}
-#phone .reply{font-size:23px;line-height:1;transform:scaleX(-1)}
-#phone .compose{font-size:21px;line-height:1}
-@media(max-width:360px){
-  #phone{padding:8px;border-radius:30px}
-  #phone .screen{height:610px;border-radius:23px}
-  #phone .scroll{padding-left:12px;padding-right:12px}
-  #phone h1{font-size:16px}
-}
+
+/* 화면의 기존 배치와 크기는 변경하지 않음 */
 </style>
+</head>
 
-<div id="phone">
-  <div class="screen">
+<body class="bg-grid flex items-center justify-center p-3 sm:p-6 min-h-screen relative overflow-x-hidden selection:bg-purple-600 selection:text-white">
 
-    <div class="status">
-      <span>19:40</span>
-      <span class="signals">
-        <span class="signal"><i></i><i></i><i></i><i></i></span>
-        <span style="font-size:9px">5G</span>
-        <span class="battery"></span>
+<canvas id="bgCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+<!-- LANDING VIEW -->
+<div id="landingScreen" class="window-frame w-full max-w-xl rounded-xl z-20 scanlines p-6 sm:p-10 text-center space-y-8 glow-pulse my-auto transition-all duration-500 transform scale-100">
+
+  <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
+    <div class="absolute inset-0 bg-purple-600/20 rounded-full blur-xl animate-pulse"></div>
+    <div class="w-full h-full bg-cosmic-900 border border-purple-500/50 rounded-2xl flex items-center justify-center shadow-lg relative">
+      <i class="fa-solid fa-satellite-dish text-3xl text-cyan-400"></i>
+    </div>
+  </div>
+
+  <div class="space-y-3">
+    <div class="inline-flex items-center space-x-2 bg-purple-950/70 border border-purple-700/50 px-3 py-1 rounded-full text-xs font-mono text-purple-300">
+      <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+      <span>QUANTUM LINK: ESTABLISHED</span>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+      외계 문명 AI 신호 분석 시스템
+    </h1>
+
+    <p class="text-xs sm:text-sm text-cosmic-dim font-mono leading-relaxed max-w-md mx-auto">
+      [TERRA-3 지구인 언어 감정 해독 모듈 v3.0]<br>
+      복잡한 지구인 대화 패턴 및 숨겨진 신경 파형 분석용
+    </p>
+  </div>
+
+  <div class="pt-2">
+    <button onclick="enterTranslator()" class="alien-btn w-full py-4 px-6 rounded-xl font-mono text-sm sm:text-base font-semibold text-cyan-300 hover:text-white flex items-center justify-center space-x-3 group relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-r from-purple-600/10 via-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      <i class="fa-solid fa-power-off text-purple-400 group-hover:text-cyan-400 transition-colors"></i>
+      <span>시스템 접속 / 번역기 가동</span>
+      <i class="fa-solid fa-chevron-right text-xs text-cosmic-dim group-hover:translate-x-1 transition-transform"></i>
+    </button>
+    <p class="text-[11px] text-cosmic-dim font-mono mt-3">
+      SECURE ACCESS CODE: 0x8F9A-EARTH-EMOTION
+    </p>
+  </div>
+</div>
+
+<!-- MAIN TRANSLATOR WINDOW -->
+<main id="translatorWindow" class="window-frame w-full max-w-2xl rounded-xl z-10 scanlines flex-col glow-pulse my-auto hidden opacity-0 transition-all duration-500 transform scale-95">
+
+  <header class="bg-cosmic-900/90 border-b border-cosmic-border px-4 py-3 rounded-t-xl flex items-center justify-between select-none">
+    <div class="flex items-center space-x-2.5 min-w-0">
+      <span class="inline-block w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shrink-0"></span>
+      <span class="font-mono text-xs sm:text-sm text-purple-300 font-semibold tracking-wider truncate">
+        <i class="fa-solid fa-terminal text-cyan-400 mr-1.5"></i>인간언어번역기.exe
+        <span class="text-[10px] text-cosmic-dim ml-1.5 bg-purple-950/60 px-1.5 py-0.5 rounded border border-purple-800/40">v3.0.4</span>
       </span>
     </div>
 
-    <div class="nav">
-      <span class="back"><i class="chevron"></i> 받은편지함</span>
-      <span class="arrows"><i class="up"></i><i class="down"></i></span>
+    <div class="flex items-center space-x-1 shrink-0 ml-2">
+      <button title="최소화" class="w-6 h-6 rounded-md flex items-center justify-center text-xs text-cosmic-dim hover:text-white hover:bg-purple-900/40 transition-colors focus:outline-none">
+        <span class="leading-none text-sm">－</span>
+      </button>
+      <button title="닫기" onclick="resetToLanding()" class="w-6 h-6 rounded-md flex items-center justify-center text-xs text-cosmic-dim hover:text-red-300 hover:bg-red-950/50 transition-colors focus:outline-none">
+        <span class="leading-none text-base">×</span>
+      </button>
     </div>
+  </header>
 
-    <article class="scroll">
-      <h1>[전송 완료] 인간어 번역기 3.0 확장 파일</h1>
+  <div class="bg-cosmic-800/60 border-b border-cosmic-border/50 px-4 py-1.5 text-[11px] font-mono text-cosmic-dim flex items-center justify-between">
+    <div class="flex items-center space-x-2 truncate">
+      <span class="text-cyan-400">● SPECIES: HUMAN (TERRA-3)</span>
+      <span>|</span>
+      <span class="truncate">NEURAL-SCAN ENGINE</span>
+    </div>
+    <div class="hidden sm:block text-purple-400 font-mono text-[10px]">QUANTUM_STABLE</div>
+  </div>
 
-      <header class="sender">
-        <div class="avatar">ᗩ</div>
-        <div class="meta">
-          <div class="row">
-            <span class="name">ᘔᗩᖇᑎᗝ ᔕᗩᗰᒍ ᗪᗴᒪ</span>
-            <span class="time">오후 7:40</span>
-          </div>
-          <div class="to">받는 사람: <b>M.M.M.@Earth.com</b></div>
-          <div class="detail">상세 보기⌄</div>
-        </div>
-      </header>
+  <div class="p-4 sm:p-6 space-y-6">
 
-      <section class="body">
-        <p>M 소령님,</p>
-        <p>요청하신 인간어 번역기 3.0 확장 파일을 보내 드립니다.</p>
-        <p>이번 버전은 신조어와 관용 표현, 말줄임표에 담긴 뜻까지 해석하도록 개선되었습니다. 설치 후에는 별도 보고 없이 바로 사용하실 수 있습니다.</p>
-        <p>첨부 파일은 지구 파견 요원 전용입니다. 외부로 전달하지 마십시오.</p>
+    <!-- STATE 1 -->
+    <section id="inputState" class="space-y-6 transition-all duration-300">
 
-        <div class="attach-title">첨부 파일 1개</div>
+      <div class="bg-cosmic-900/70 border border-purple-900/40 rounded-lg p-4 space-y-3 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-purple-600/5 rounded-full blur-xl pointer-events-none"></div>
 
-        <a class="file" href="https://angelwithheaven.github.io/Translator/?v=4">
-          <span class="fi">✓</span>
-          <span class="ft">
-            <span class="fn">인간어 번역기 3.0 확장 파일</span><br>
-            <span class="fs">확장 프로그램 · 3.0 MB</span>
+        <div class="flex items-center justify-between border-b border-cosmic-border/60 pb-2">
+          <span class="text-xs font-mono text-purple-300 tracking-wider flex items-center">
+            <i class="fa-solid fa-dna text-purple-400 mr-2"></i>분석 대상 인간 데이터 [TARGET PROFILE]
           </span>
-        </a>
-
-        <div class="sig">
-          <span class="al">ᗰᗴᒪᗪ ᑎᗩᖇ</span><br>
-          통신관리국
+          <span class="text-[10px] font-mono bg-cyan-950/80 text-cyan-300 border border-cyan-800/40 px-2 py-0.5 rounded-full">VERIFIED</span>
         </div>
 
-        <h2>설치 안내</h2>
-        <ol class="steps">
-          <li>첨부 파일을 열고 사용 약관에 동의합니다.</li>
-          <li>설치가 끝나면 통신 장치를 한 번 껐다 켭니다.</li>
-          <li>첫 실행 시 지구어 사전이 자동으로 동기화됩니다.</li>
-        </ol>
-
-        <p class="note">통신 장치가 꺼져 있으면 동기화가 지연될 수 있습니다.</p>
-
-        <div class="actions">
-          <span>답장</span>
-          <span>전체 답장</span>
-          <span>전달</span>
-        </div>
-
-        <div class="prev-head">
-          <h2>이전 메일</h2>
-          <span>3개</span>
-        </div>
-
-        <div class="mail">
-          <div class="avatar">ᘜ</div>
-          <div class="mt">
-            <div class="mr">
-              <span class="mn">ᘜᗩᗰᒪᗴ ᑭᗩᖇᗴ</span>
-              <span class="md">목요일</span>
-            </div>
-            <div class="ms">[접수 완료] 번역기 업그레이드 요청</div>
-            <div class="mp">요청서가 정상 접수되었습니다. 처리에는 지구 시간으로 최대 3일이 소요됩니다.</div>
+        <div class="flex flex-wrap gap-2 pt-1 text-xs sm:text-sm">
+          <div class="bg-cosmic-800/90 border border-cosmic-border px-3 py-1.5 rounded-md flex items-center space-x-1.5">
+            <span class="text-cosmic-dim text-xs">종족:</span><span class="font-medium text-purple-200">인간</span>
+          </div>
+          <div class="bg-cosmic-800/90 border border-pink-900/40 px-3 py-1.5 rounded-md flex items-center space-x-1.5">
+            <span class="text-cosmic-dim text-xs">성별:</span>
+            <span class="font-medium text-pink-300 flex items-center">여자 <span class="ml-1 font-bold text-pink-400">♀</span></span>
+          </div>
+          <div class="bg-cosmic-800/90 border border-cosmic-border px-3 py-1.5 rounded-md flex items-center space-x-1.5">
+            <span class="text-cosmic-dim text-xs">국적:</span><span class="font-medium text-cyan-200">한국인</span>
+          </div>
+          <div class="bg-cosmic-800/90 border border-cosmic-border px-3 py-1.5 rounded-md flex items-center space-x-1.5">
+            <span class="text-cosmic-dim text-xs">연령대:</span><span class="font-medium text-indigo-200">20대</span>
+          </div>
+          <div class="bg-purple-950/40 border border-purple-600/40 px-3 py-1.5 rounded-md flex items-center space-x-1.5">
+            <span class="text-purple-300 text-xs">관계:</span><span class="font-bold text-purple-200">전애인</span>
           </div>
         </div>
+      </div>
 
-        <div class="mail">
-          <div class="avatar">ᗩ</div>
-          <div class="mt">
-            <div class="mr">
-              <span class="mn">ᗩᗪᗰᓰᑎ ᖇᗴᑭ</span>
-              <span class="md">지난주</span>
-            </div>
-            <div class="ms">Re: 한국어 해석 오류 보고</div>
-            <div class="mp">'커엽다'를 '위험하다'로 번역한 사례를 확인했습니다. 개선안에 반영하겠습니다.</div>
+      <div class="space-y-2">
+        <label class="block text-xs font-mono text-purple-300 tracking-wider">
+          <i class="fa-solid fa-message text-cyan-400 mr-1.5"></i>투입 인간 언어 [INPUT SIGNAL]
+        </label>
+        <div class="bg-cosmic-900/90 border border-cyan-900/50 rounded-lg p-4 relative group">
+          <div class="absolute -top-2.5 right-3 bg-cosmic-800 text-cyan-400 text-[10px] font-mono px-2 py-0.5 rounded border border-cyan-800/50">RAW SIGNAL DATA</div>
+          <p class="text-base sm:text-lg font-medium text-white tracking-wide leading-relaxed font-sans">
+            "네 옷 다 개놨어. 와서 가져가."
+          </p>
+          <div class="mt-3 text-[11px] text-cosmic-dim font-mono flex items-center justify-between border-t border-cosmic-border/40 pt-2">
+            <span>음성 톤: 무심한 척함</span><span class="text-purple-400">숨은 의도 감지됨</span>
           </div>
         </div>
+      </div>
 
-        <div class="mail">
-          <div class="avatar">ᗰ</div>
-          <div class="mt">
-            <div class="mr">
-              <span class="mn">ᗰᗴᒪᗪ ᑎᗩᖇ</span>
-              <span class="md">2주 전</span>
-            </div>
-            <div class="ms">[정기] 위장 신분 점검 안내</div>
-            <div class="mp">이번 점검은 서면으로 대체됩니다. 별도 회신 없이 확인만 해 주십시오.</div>
-          </div>
+      <div class="pt-2">
+        <button id="translateBtn" onclick="startTranslation()" class="alien-btn w-full py-4 px-6 rounded-xl font-mono text-sm sm:text-base font-semibold text-cyan-200 hover:text-white flex items-center justify-center space-x-3 group relative overflow-hidden">
+          <div class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></div>
+          <i class="fa-solid fa-microchip text-purple-400 group-hover:text-cyan-300 transition-colors"></i>
+          <span class="tracking-wider">번역 실행 [ANALYZE &amp; TRANSLATE]</span>
+          <i class="fa-solid fa-bolt text-xs text-purple-400 group-hover:text-cyan-300 transition-colors"></i>
+        </button>
+        <p class="text-center text-[11px] text-cosmic-dim font-mono mt-2.5">
+          * 버튼 클릭 시 외계 양자 신경망 감정 디코딩이 가동됩니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- STATE 2 -->
+    <section id="loadingState" class="hidden space-y-6 py-4">
+      <div class="text-center space-y-2">
+        <div class="inline-flex items-center space-x-2 bg-purple-950/60 border border-purple-600/40 px-3 py-1 rounded-full text-xs font-mono text-purple-300 animate-pulse">
+          <i class="fa-solid fa-circle-notch fa-spin text-cyan-400"></i><span>DECRYPTION IN PROGRESS...</span>
         </div>
+        <h3 class="text-lg font-mono font-bold text-white tracking-widest uppercase">NOW TRANSLATING / LOADING</h3>
+      </div>
 
-        <p class="foot">이 메일은 암호화된 통신망으로 전송되었습니다.</p>
-      </section>
-    </article>
+      <div class="bg-cosmic-900/90 border border-purple-800/50 rounded-lg p-4 font-mono text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-purple-500/5 radar-line pointer-events-none"></div>
+        <div class="text-xs text-cosmic-dim mb-1">신경망 해석 스트림 [NEURAL STREAM]</div>
+        <div id="alienRunes" class="text-cyan-400 text-lg sm:text-xl font-bold tracking-widest min-h-[32px] flex items-center justify-center">☍☌ ☍☍☎ ☏☐ ☑☒☓ ☔☕ ☖☗</div>
+      </div>
 
-    <div class="tools">
-      <span class="tool"><i class="trash"></i></span>
-      <span class="tool"><i class="folder"></i></span>
-      <span class="tool"><i class="reply">↩</i></span>
-      <span class="tool"><i class="compose">✎</i></span>
-    </div>
+      <div class="space-y-2">
+        <div class="flex justify-between text-xs font-mono text-cosmic-dim">
+          <span id="scanStatus">신호 파형 분해 중...</span><span id="progressPercent" class="text-cyan-400 font-bold">0%</span>
+        </div>
+        <div class="w-full h-3 bg-cosmic-900 rounded-full border border-cosmic-border p-0.5 overflow-hidden">
+          <div id="progressBar" class="h-full bg-gradient-to-r from-purple-600 via-indigo-500 to-cyan-400 rounded-full w-0 transition-all duration-100 ease-out shadow-sm shadow-cyan-400/50"></div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-center space-x-1.5 h-10 pt-2">
+        <div class="w-1.5 bg-purple-500/80 rounded-full animate-[bounce_1s_infinite_100ms] h-full"></div>
+        <div class="w-1.5 bg-cyan-400/80 rounded-full animate-[bounce_1s_infinite_200ms] h-3/4"></div>
+        <div class="w-1.5 bg-indigo-500/80 rounded-full animate-[bounce_1s_infinite_300ms] h-1/2"></div>
+        <div class="w-1.5 bg-purple-400/80 rounded-full animate-[bounce_1s_infinite_400ms] h-5/6"></div>
+        <div class="w-1.5 bg-pink-500/80 rounded-full animate-[bounce_1s_infinite_150ms] h-2/3"></div>
+        <div class="w-1.5 bg-cyan-300/80 rounded-full animate-[bounce_1s_infinite_250ms] h-full"></div>
+      </div>
+    </section>
+
+    <!-- STATE 3 -->
+    <section id="resultState" class="hidden space-y-6">
+      <div class="bg-gradient-to-b from-purple-950/80 to-cosmic-900 border-2 border-purple-500/60 rounded-xl p-5 sm:p-6 relative overflow-hidden shadow-xl shadow-purple-950/50">
+        <div class="absolute top-0 right-0 bg-purple-600 text-white font-mono text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">FINAL DECODED RESULT</div>
+        <div class="text-xs font-mono text-cyan-400 mb-2 flex items-center"><i class="fa-solid fa-earth-americas mr-1.5"></i>지구어 심층 진심 번역:</div>
+        <div id="mainResultText" class="text-xl sm:text-2xl font-bold text-white leading-snug my-3 min-h-[60px] flex items-center">지구에서 아직 사랑한다는 표현 (확률 98.4%)</div>
+        <div class="mt-4 pt-4 border-t border-purple-800/40 text-xs sm:text-sm text-cosmic-dim leading-relaxed space-y-2">
+          <p class="text-purple-200">
+            <i class="fa-solid fa-magnifying-glass text-cyan-400 mr-1.5"></i>
+            <strong class="text-white">외계 심층 해석:</strong> 인간 여성 특유의 <span class="text-cyan-300">'역설적 정서 유도 기법'</span>입니다. 옷을 다 개어놓았다는 언급은 상대방을 생각하며 시간에 투자했음을 의미하며, '가져가라'는 연락은 단지 만나기 위한 핑계 명분에 불과합니다.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 font-mono text-xs">
+        <div class="bg-cosmic-900/80 border border-cosmic-border p-3 rounded-lg space-y-1.5">
+          <div class="flex justify-between text-cosmic-dim"><span>진심도 (Sincerity)</span><span class="text-pink-400 font-bold">98.4%</span></div>
+          <div class="w-full bg-cosmic-800 h-1.5 rounded-full overflow-hidden"><div class="bg-pink-500 h-full w-[98.4%] rounded-full"></div></div>
+        </div>
+        <div class="bg-cosmic-900/80 border border-cosmic-border p-3 rounded-lg space-y-1.5">
+          <div class="flex justify-between text-cosmic-dim"><span>그리움 (Nostalgia)</span><span class="text-purple-400 font-bold">94.1%</span></div>
+          <div class="w-full bg-cosmic-800 h-1.5 rounded-full overflow-hidden"><div class="bg-purple-500 h-full w-[94.1%] rounded-full"></div></div>
+        </div>
+        <div class="bg-cosmic-900/80 border border-cosmic-border p-3 rounded-lg space-y-1.5">
+          <div class="flex justify-between text-cosmic-dim"><span>자존심/방어기제</span><span class="text-cyan-400 font-bold">89.0%</span></div>
+          <div class="w-full bg-cosmic-800 h-1.5 rounded-full overflow-hidden"><div class="bg-cyan-400 h-full w-[89%] rounded-full"></div></div>
+        </div>
+        <div class="bg-cosmic-900/80 border border-cosmic-border p-3 rounded-lg space-y-1.5">
+          <div class="flex justify-between text-cosmic-dim"><span>재회 희망 (Hope)</span><span class="text-indigo-400 font-bold">99.2%</span></div>
+          <div class="w-full bg-cosmic-800 h-1.5 rounded-full overflow-hidden"><div class="bg-indigo-400 h-full w-[99.2%] rounded-full"></div></div>
+        </div>
+      </div>
+
+      <div class="space-y-2.5">
+        <label class="block text-xs font-mono text-purple-300 tracking-wider"><i class="fa-solid fa-tags text-cyan-400 mr-1.5"></i>동일한 신경 파형의 유사 지구어 표현 [SIMILAR EXPRESSIONS]</label>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div class="bg-cosmic-900/90 hover:bg-purple-900/30 border border-purple-800/40 p-2.5 rounded-lg text-center transition-all cursor-pointer group"><span class="text-xs text-cosmic-dim block text-[10px] mb-0.5">직설 표현</span><span class="text-sm font-semibold text-purple-200 group-hover:text-pink-300">사랑해</span></div>
+          <div class="bg-cosmic-900/90 hover:bg-purple-900/30 border border-purple-800/40 p-2.5 rounded-lg text-center transition-all cursor-pointer group"><span class="text-xs text-cosmic-dim block text-[10px] mb-0.5">애정 표현</span><span class="text-sm font-semibold text-purple-200 group-hover:text-pink-300">보고싶어</span></div>
+          <div class="bg-cosmic-900/90 hover:bg-purple-900/30 border border-purple-800/40 p-2.5 rounded-lg text-center transition-all cursor-pointer group"><span class="text-xs text-cosmic-dim block text-[10px] mb-0.5">반어 표현</span><span class="text-sm font-semibold text-purple-200 group-hover:text-pink-300">니가 미워</span></div>
+          <div class="bg-cosmic-900/90 hover:bg-purple-900/30 border border-purple-800/40 p-2.5 rounded-lg text-center transition-all cursor-pointer group"><span class="text-xs text-cosmic-dim block text-[10px] mb-0.5">친근 호칭</span><span class="text-sm font-semibold text-purple-200 group-hover:text-pink-300">이 바보야</span></div>
+        </div>
+      </div>
+
+      <div class="pt-2">
+        <button onclick="resetTranslator()" class="alien-btn w-full py-3.5 px-4 rounded-xl font-mono text-xs sm:text-sm text-purple-200 flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-rotate-left text-cyan-400"></i><span>다시 분석하기 / RESET SCAN ENGINE</span>
+        </button>
+      </div>
+    </section>
 
   </div>
-</div>
+
+  <footer class="bg-cosmic-900/80 border-t border-cosmic-border px-4 py-2 text-[10px] font-mono text-cosmic-dim flex items-center justify-between rounded-b-xl">
+    <span>SYSTEM STATUS: <span class="text-emerald-400">ONLINE</span></span>
+    <span class="text-purple-400">GALACTIC_TRANSLATOR_V3</span>
+  </footer>
+</main>
+
+<script>
+let audioCtx = null;
+
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+function playBeep(freq = 440, type = 'sine', duration = 0.08) {
+  try {
+    initAudio();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  } catch (e) {}
+}
+
+function playSuccessSound() {
+  try {
+    initAudio();
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(523.25, now);
+    osc.frequency.setValueAtTime(659.25, now + 0.1);
+    osc.frequency.setValueAtTime(783.99, now + 0.2);
+    osc.frequency.setValueAtTime(1046.50, now + 0.3);
+    gain.gain.setValueAtTime(0.06, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(now + 0.5);
+  } catch (e) {}
+}
+
+function enterTranslator() {
+  playBeep(700, 'sine', 0.15);
+  const landing = document.getElementById('landingScreen');
+  const windowEl = document.getElementById('translatorWindow');
+  landing.classList.add('scale-95', 'opacity-0');
+
+  setTimeout(() => {
+    landing.classList.add('hidden');
+    windowEl.classList.remove('hidden');
+    setTimeout(() => {
+      windowEl.classList.remove('scale-95', 'opacity-0');
+      windowEl.classList.add('scale-100', 'opacity-100');
+    }, 50);
+  }, 400);
+}
+
+function resetToLanding() {
+  playBeep(300, 'sine', 0.1);
+  const landing = document.getElementById('landingScreen');
+  const windowEl = document.getElementById('translatorWindow');
+  windowEl.classList.remove('scale-100', 'opacity-100');
+  windowEl.classList.add('scale-95', 'opacity-0');
+
+  setTimeout(() => {
+    windowEl.classList.add('hidden');
+    landing.classList.remove('hidden');
+    setTimeout(() => {
+      landing.classList.remove('scale-95', 'opacity-0');
+      landing.classList.add('scale-100', 'opacity-100');
+      resetTranslator();
+    }, 50);
+  }, 400);
+}
+
+const alienSymbols = "☍☌☍☍☎☏☐☑☒☓☔☕☖☗◈◇◆▲△▼▽☙☛☚☜☝☞☟";
+let runeInterval = null;
+
+function startRuneAnimation() {
+  const runesEl = document.getElementById('alienRunes');
+  runeInterval = setInterval(() => {
+    let randomRunes = "";
+    for (let i = 0; i < 12; i++) {
+      randomRunes += alienSymbols[Math.floor(Math.random() * alienSymbols.length)] + " ";
+    }
+    runesEl.textContent = randomRunes;
+    playBeep(200 + Math.random() * 500, 'sine', 0.03);
+  }, 80);
+}
+
+function stopRuneAnimation() {
+  if (runeInterval) clearInterval(runeInterval);
+}
+
+function startTranslation() {
+  playBeep(880, 'sine', 0.1);
+  const inputState = document.getElementById('inputState');
+  const loadingState = document.getElementById('loadingState');
+  const resultState = document.getElementById('resultState');
+
+  inputState.classList.add('hidden');
+  loadingState.classList.remove('hidden');
+  resultState.classList.add('hidden');
+  startRuneAnimation();
+
+  const progressBar = document.getElementById('progressBar');
+  const progressPercent = document.getElementById('progressPercent');
+  const scanStatus = document.getElementById('scanStatus');
+
+  const statuses = [
+    "음성 신경 파형 수집 중...",
+    "한국인 20대 여성 감정 데이터베이스 비교 중...",
+    "전애인 관계 컨텍스트 파싱 중...",
+    "자존심 방어기제 필터링 제거 중...",
+    "심층 진심 신호 복원 완료!"
+  ];
+
+  let progress = 0;
+  const interval = setInterval(() => {
+    progress += Math.floor(Math.random() * 8) + 3;
+    if (progress > 100) progress = 100;
+
+    progressBar.style.width = progress + '%';
+    progressPercent.textContent = progress + '%';
+
+    const statusIdx = Math.min(Math.floor((progress / 100) * statuses.length), statuses.length - 1);
+    scanStatus.textContent = statuses[statusIdx];
+
+    if (progress >= 100) {
+      clearInterval(interval);
+      stopRuneAnimation();
+      playSuccessSound();
+
+      setTimeout(() => {
+        loadingState.classList.add('hidden');
+        resultState.classList.remove('hidden');
+        triggerTypingEffect();
+      }, 400);
+    }
+  }, 90);
+}
+
+function triggerTypingEffect() {
+  const container = document.getElementById('mainResultText');
+  const textToType = `지구에서 아직 사랑한다는 표현 (확률 98.4%)`;
+  container.innerHTML = "";
+  let i = 0;
+
+  const typingInterval = setInterval(() => {
+    if (i < textToType.length) {
+      container.textContent += textToType.charAt(i);
+      playBeep(550 + (i * 12), 'triangle', 0.02);
+      i++;
+    } else {
+      clearInterval(typingInterval);
+      container.innerHTML = `지구에서 <span class="text-pink-400 font-extrabold mx-1">아직 사랑한다는</span> 표현 <span class="text-xs sm:text-sm font-normal text-purple-300 ml-1.5 bg-purple-950/80 px-2.5 py-0.5 rounded border border-purple-800/50">(확률 98.4%)</span>`;
+    }
+  }, 45);
+}
+
+function resetTranslator() {
+  playBeep(400, 'sine', 0.08);
+  document.getElementById('resultState').classList.add('hidden');
+  document.getElementById('loadingState').classList.add('hidden');
+  document.getElementById('inputState').classList.remove('hidden');
+  document.getElementById('progressBar').style.width = '0%';
+  document.getElementById('progressPercent').textContent = '0%';
+}
+
+/* 기존 별·먼지 입자 배경 애니메이션 */
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+class Particle {
+  constructor() { this.reset(); }
+
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 1.5 + 0.5;
+    this.speedX = (Math.random() - 0.5) * 0.25;
+    this.speedY = (Math.random() - 0.5) * 0.25;
+    this.alpha = Math.random() * 0.4 + 0.15;
+  }
+
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+      this.reset();
+    }
+  }
+
+  draw() {
+    ctx.fillStyle = `rgba(174, 164, 194, ${this.alpha})`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function initParticles() {
+  resizeCanvas();
+  particles = [];
+  for (let i = 0; i < 55; i++) particles.push(new Particle());
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.update();
+    p.draw();
+  });
+  requestAnimationFrame(animateParticles);
+}
+
+window.addEventListener('resize', resizeCanvas);
+
+window.onload = function() {
+  initParticles();
+  animateParticles();
+};
+</script>
+</body>
+</html>
