@@ -278,6 +278,35 @@ body {
     align-items: flex-start;
   }
 
+  /* 분석 대상 헤더의 VERIFIED 배지가 제목과 겹치지 않게 분리 */
+  #inputState .border-b.border-cosmic-border\/60.pb-2 {
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
+
+  #inputState .border-b.border-cosmic-border\/60.pb-2 > span:first-child {
+    flex: 1 1 180px;
+    min-width: 0;
+    line-height: 1.6;
+  }
+
+  #inputState .verified-label {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    margin-left: auto;
+  }
+
+  /* RAW SIGNAL DATA를 카드 모서리에 겹쳐 놓지 않고 모바일에서 별도 줄로 표시 */
+  #inputState .raw-signal-label {
+    position: static;
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    margin: -.25rem 0 .6rem auto;
+    white-space: nowrap;
+    line-height: 1.5;
+  }
+
   footer {
     flex-wrap: wrap;
     gap: .35rem .75rem;
@@ -374,7 +403,7 @@ body {
           <span class="text-xs font-mono text-purple-300 tracking-wider flex items-center">
             <i class="fa-solid fa-dna text-purple-400 mr-2"></i>분석 대상 인간 데이터 [TARGET PROFILE]
           </span>
-          <span class="text-[10px] font-mono bg-cyan-950/80 text-cyan-300 border border-cyan-800/40 px-2 py-0.5 rounded-full">VERIFIED</span>
+          <span class="verified-label text-[10px] font-mono bg-cyan-950/80 text-cyan-300 border border-cyan-800/40 px-2 py-0.5 rounded-full">VERIFIED</span>
         </div>
 
         <div class="flex flex-wrap gap-2 pt-1 text-xs sm:text-sm">
@@ -402,7 +431,7 @@ body {
           <i class="fa-solid fa-message text-cyan-400 mr-1.5"></i>투입 인간 언어 [INPUT SIGNAL]
         </label>
         <div class="bg-cosmic-900/90 border border-cyan-900/50 rounded-lg p-4 relative group">
-          <div class="absolute -top-2.5 right-3 bg-cosmic-800 text-cyan-400 text-[10px] font-mono px-2 py-0.5 rounded border border-cyan-800/50">RAW SIGNAL DATA</div>
+          <div class="raw-signal-label absolute -top-2.5 right-3 bg-cosmic-800 text-cyan-400 text-[10px] font-mono px-2 py-0.5 rounded border border-cyan-800/50">RAW SIGNAL DATA</div>
           <p class="text-base sm:text-lg font-medium text-white tracking-wide leading-relaxed font-sans">
             "네 옷 다 개놨어. 와서 가져가."
           </p>
