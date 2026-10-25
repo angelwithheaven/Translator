@@ -220,6 +220,71 @@ body {
 }
 
 /* 화면의 기존 배치와 크기는 변경하지 않음 */
+
+/* 모바일 전용 보정: 데스크톱 레이아웃은 변경하지 않음 */
+@media (max-width: 640px) {
+  body {
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
+
+  #mainResultText {
+    display: block;
+    min-height: 0;
+    text-align: center;
+    line-height: 1.45;
+    font-size: 1.15rem;
+    overflow-wrap: normal;
+  }
+
+  #mainResultText > span {
+    display: inline;
+    white-space: normal;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  #mainResultText > span:last-child {
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: .35rem;
+    white-space: nowrap;
+  }
+
+  #loadingState .inline-flex {
+    max-width: 100%;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    gap: .4rem;
+    font-size: 10px;
+  }
+
+  #loadingState h3 {
+    font-size: .95rem;
+    letter-spacing: .08em;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  #alienRunes {
+    font-size: 1rem;
+    letter-spacing: .08em;
+    overflow-wrap: normal;
+    white-space: nowrap;
+  }
+
+  #resultState .grid.grid-cols-2 > div > div:first-child {
+    gap: .35rem;
+    align-items: flex-start;
+  }
+
+  footer {
+    flex-wrap: wrap;
+    gap: .35rem .75rem;
+    line-height: 1.5;
+  }
+}
+
 </style>
 </head>
 
